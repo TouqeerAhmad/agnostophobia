@@ -1,4 +1,4 @@
-# Agnostophobia -- Deep Learning Assessment
+# Agnostophobia -- Deep Learning 
 
 ## Introduction
 This repository provides the code to incorporate center-loss in the keras based implementation of the paper titled "Reducing Network Agnostophobia" [1]. The original implementation of the paper is available [here](https://github.com/Vastlab/ObjectoSphere).
