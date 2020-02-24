@@ -6,7 +6,7 @@ import numpy as np
 from centerLoss_MNIST import prelu, CenterLossLayer
 
 
-def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approach=False,background_class=False, knownsMinimumMag = None, center_approach=False):
+def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approach=False,background_class=False, knownsMinimumMag = None, center_approach=True, aux_input = None):
     """
     Defines the network architecture for LeNet++.
     Use the options for different approaches:
@@ -15,6 +15,7 @@ def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approac
     knownsMinimumMag: Minimum Magnitude allowed for samples belonging to one of the Known Classes if ring_approach is True
     """
     mnist_image = Input(shape=(28, 28, 1), dtype='float32', name='mnist_image')
+    
     
     # 28 X 28 --> 14 X 14
     conv1_1 = Conv2D(32, (5,5), strides=1, padding="same",name='conv1_1')(mnist_image)
@@ -44,19 +45,23 @@ def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approac
         pred = Dense(10, name='pred',use_bias=False)(fc)
         softmax = Activation(activation_type,name='softmax')(pred)
         model = Model(inputs=[mnist_image,knownsMinimumMag], outputs=[softmax,fc])
+        model.summary()
     elif background_class:
         pred = Dense(11, name='pred',use_bias=False)(fc)
         softmax = Activation(activation_type,name='softmax')(pred)
         model = Model(inputs=[mnist_image], outputs=[softmax])
-    elif center_loss:
+    elif center_approach:
+        print('In elif ...')
         # incorporate center-loss and objectosphere loss
         knownUnknownsFlag = Input((1,), dtype='float32', name='knownUnknownsFlag')
+        aux_input = Input((10,), dtype='float32', name='labels')
         pred = Dense(10, name='pred',use_bias=False)(fc)
         softmax = Activation(activation_type,name='softmax')(pred)
-        aux_input = Input(shape=(10,), dtype='float32', name='labels')
         x = prelu(fc, name='side_out')
-        centerlosslayer = CenterLossLayer(alpha=0.5, name='centerlosslayer')([x, labels])
+        centerlosslayer = CenterLossLayer(alpha=0.5, name='centerlosslayer')([x, aux_input])
         model = Model(inputs=[mnist_image,knownsMinimumMag,aux_input], outputs=[softmax,fc,centerlosslayer])
+        #model = Model(inputs=[mnist_image,knownsMinimumMag], outputs=[softmax,fc])
+        model.summary()
     else:
         pred = Dense(10, name='pred', use_bias=False)(fc)
         softmax = Activation(activation_type,name='softmax')(pred)
@@ -64,6 +69,48 @@ def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approac
     return model
 
 
+
+def LeNet_plus_plus_plus(mnist_image,knownsMinimumMag, aux_input): #LeNet_plus_plus_plus(mnist_image, aux_input):#
+    
+    activation_type='softmax'
+    # 28 X 28 --> 14 X 14
+    conv1_1 = Conv2D(32, (5,5), strides=1, padding="same",name='conv1_1')(mnist_image)
+    conv1_2 = Conv2D(32, (5,5), strides=1, padding="same",name='conv1_2')(conv1_1)
+    conv1_2 = BatchNormalization(name='BatchNormalization_1')(conv1_2)
+    pool1 = MaxPooling2D(pool_size=(2,2), strides=2,name='pool1')(conv1_2)
+    # 14 X 14 --> 7 X 7
+    conv2_1 = Conv2D(64, (5,5), strides=1, padding="same", name='conv2_1')(pool1)
+    conv2_2 = Conv2D(64, (5,5), strides=1, padding="same", name='conv2_2')(conv2_1)
+    conv2_2 = BatchNormalization(name='BatchNormalization_2')(conv2_2)
+    pool2 = MaxPooling2D(pool_size=(2,2), strides=2, name='pool2')(conv2_2)
+    # 7 X 7 --> 3 X 3
+    conv3_1 = Conv2D(128, (5,5), strides=1, padding="same",name='conv3_1')(pool2)
+    conv3_2 = Conv2D(128, (5,5), strides=1, padding="same",name='conv3_2')(conv3_1)
+    conv3_2 = BatchNormalization(name='BatchNormalization_3')(conv3_2)
+    pool3 = MaxPooling2D(pool_size=(2,2), strides=2, name='pool3')(conv3_2)
+    flatten=Flatten(name='flatten')(pool3)
+    fc = Dense(2,name='fc',use_bias=True)(flatten)
+
+    pred = Dense(10, name='pred',use_bias=False)(fc)
+    softmax = Activation(activation_type,name='softmax')(pred)
+    x = prelu(fc, name='side_out')
+    centerlosslayer = CenterLossLayer(alpha=0.5, name='centerlosslayer')([x, aux_input])
+    mag = knownsMinimumMag
+
+    return softmax, fc, centerlosslayer
+    #return softmax, centerlosslayer
+
+def LeNet_plus_plus_plus_model(mnist_image,knownsMinimumMag, aux_input): #LeNet_plus_plus_plus_model(mnist_image, aux_input): #
+    softmax,fc,centerlosslayer = LeNet_plus_plus_plus(mnist_image,knownsMinimumMag, aux_input)
+    model = Model(inputs=[mnist_image,knownsMinimumMag,aux_input], outputs=[softmax,fc,centerlosslayer])
+    #softmax,fc,centerlosslayer = LeNet_plus_plus_plus(mnist_image, aux_input)
+    #model = Model(inputs=[mnist_image, aux_input], outputs=[softmax,fc,centerlosslayer])
+    #softmax,centerlosslayer = LeNet_plus_plus_plus(mnist_image, aux_input)
+    
+    #model = Model(inputs=[mnist_image, aux_input], outputs=[softmax, centerlosslayer])
+    model.summary()
+
+    return model
 
 
 def LeNet(activation_type='softmax',ring_approach=False,background_class=False, knownsMinimumMag = None):
