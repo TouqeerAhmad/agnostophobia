@@ -1,4 +1,4 @@
-# Agnostophobia
+# Agnostophobia -- Deep Learning Assesment
 
 ## Introduction
 This Repository provides the code to incorporate center-loss in the implementation of the keras based implementation of the paper titled "Reducing Network Agnostophobia" [1]. The original implementation of the paper is available from the [link](https://github.com/Vastlab/ObjectoSphere).
@@ -39,3 +39,10 @@ The [Tools/model_tools.py](https://github.com/Vastlab/ObjectoSphere/tree/master/
 The [Tools/visualizing_tools.py](https://github.com/Vastlab/ObjectoSphere/tree/master/Tools/visualizing_tools.py) contains the plotting functions for the two-dimensional plots and the histograms.
 And, the [Tools/evaluation_tools.py](https://github.com/Vastlab/ObjectoSphere/tree/master/Tools/evaluation_tools.py) contains the plotting functions for the DIR curves in the paper as well as a function to write the results into a preliminary file.
 Please refer to these files for a detailed understanding.
+
+## References
+[1]. A. Dhamija, M. Günther, and Terrance E. Boult: “Reducing network agnostophobia”, Neural Information Processing Systems (NeurIPS), 2018. [paper](https://papers.nips.cc/paper/8129-reducing-network-agnostophobia.pdf)
+[2]. Y. Wen, K. Zhang, Z. Li and Y. Qiao: “A Discriminative Feature Learning Approach for Deep Face Recognition”, ECCV, 2016. [paper](https://ydwen.github.io/papers/WenECCV16.pdf)
+[3] Center loss, [PyTorch Implementation](https://github.com/KaiyangZhou/pytorch-center-loss)
+[4] Center loss, [TensorFlow Keras Implementation](https://github.com/handongfeng/MNIST-center-loss)
+
