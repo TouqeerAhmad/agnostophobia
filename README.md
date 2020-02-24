@@ -43,6 +43,6 @@ Please refer to these files for a detailed understanding.
 ## References
 * [1]. A. Dhamija, M. Günther, and Terrance E. Boult: “Reducing Network Agnostophobia”, Neural Information Processing Systems (NeurIPS), 2018. [paper](https://papers.nips.cc/paper/8129-reducing-network-agnostophobia.pdf)
 * [2]. Y. Wen, K. Zhang, Z. Li and Y. Qiao: “A Discriminative Feature Learning Approach for Deep Face Recognition”, ECCV, 2016. [paper](https://ydwen.github.io/papers/WenECCV16.pdf)
-* [3] Center loss, [PyTorch Implementation](https://github.com/KaiyangZhou/pytorch-center-loss)
-* [4] Center loss, [TensorFlow Keras Implementation](https://github.com/handongfeng/MNIST-center-loss)
+* [3] Center loss: [PyTorch Implementation](https://github.com/KaiyangZhou/pytorch-center-loss)
+* [4] Center loss: [TensorFlow Keras Implementation](https://github.com/handongfeng/MNIST-center-loss)
 

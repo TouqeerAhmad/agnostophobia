@@ -34,12 +34,23 @@ def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approac
     pool3 = MaxPooling2D(pool_size=(2,2), strides=2, name='pool3')(conv3_2)
     flatten=Flatten(name='flatten')(pool3)
     fc = Dense(2,name='fc',use_bias=True)(flatten)
-
+    
+    
     if perform_L2_norm:
         alpha_multipliers = Input((1,), dtype='float32', name='alphas')
         act = Activation(lambda x: alpha_multipliers*(K.l2_normalize(x,axis=1)),name='act')(fc)
         pred = Dense(10, activation=activation_type,name='pred',use_bias=False)(act)
         model = Model(inputs=[mnist_image,alpha_multipliers], outputs=[pred])
+    elif center_approach:
+        # incorporate center-loss and objectosphere-loss
+        pred = Dense(10, name='pred',use_bias=False)(fc)
+        softmax = Activation(activation_type,name='softmax')(pred)
+        x = prelu(fc, name='side_out')
+        centerlosslayer = CenterLossLayer(alpha=0.5, name='centerlosslayer')([x, aux_input])
+        # dummy use of knownsMinimumMag to stop keras from complaining
+        mag = knownsMinimumMag
+        model = Model(inputs=[mnist_image,knownsMinimumMag,aux_input], outputs=[softmax,fc,centerlosslayer])
+        #model.summary()
     elif knownsMinimumMag is not None:
         knownUnknownsFlag = Input((1,), dtype='float32', name='knownUnknownsFlag')
         pred = Dense(10, name='pred',use_bias=False)(fc)
@@ -50,18 +61,6 @@ def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approac
         pred = Dense(11, name='pred',use_bias=False)(fc)
         softmax = Activation(activation_type,name='softmax')(pred)
         model = Model(inputs=[mnist_image], outputs=[softmax])
-    elif center_approach:
-        print('In elif ...')
-        # incorporate center-loss and objectosphere loss
-        knownUnknownsFlag = Input((1,), dtype='float32', name='knownUnknownsFlag')
-        aux_input = Input((10,), dtype='float32', name='labels')
-        pred = Dense(10, name='pred',use_bias=False)(fc)
-        softmax = Activation(activation_type,name='softmax')(pred)
-        x = prelu(fc, name='side_out')
-        centerlosslayer = CenterLossLayer(alpha=0.5, name='centerlosslayer')([x, aux_input])
-        model = Model(inputs=[mnist_image,knownsMinimumMag,aux_input], outputs=[softmax,fc,centerlosslayer])
-        #model = Model(inputs=[mnist_image,knownsMinimumMag], outputs=[softmax,fc])
-        model.summary()
     else:
         pred = Dense(10, name='pred', use_bias=False)(fc)
         softmax = Activation(activation_type,name='softmax')(pred)
@@ -69,7 +68,7 @@ def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approac
     return model
 
 
-
+## Experimental -- to be deleted
 def LeNet_plus_plus_plus(mnist_image,knownsMinimumMag, aux_input): #LeNet_plus_plus_plus(mnist_image, aux_input):#
     
     activation_type='softmax'
@@ -100,6 +99,7 @@ def LeNet_plus_plus_plus(mnist_image,knownsMinimumMag, aux_input): #LeNet_plus_p
     return softmax, fc, centerlosslayer
     #return softmax, centerlosslayer
 
+## Experimental -- to be deleted
 def LeNet_plus_plus_plus_model(mnist_image,knownsMinimumMag, aux_input): #LeNet_plus_plus_plus_model(mnist_image, aux_input): #
     softmax,fc,centerlosslayer = LeNet_plus_plus_plus(mnist_image,knownsMinimumMag, aux_input)
     model = Model(inputs=[mnist_image,knownsMinimumMag,aux_input], outputs=[softmax,fc,centerlosslayer])

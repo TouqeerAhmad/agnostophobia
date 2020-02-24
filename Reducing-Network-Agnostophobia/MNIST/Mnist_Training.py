@@ -226,13 +226,8 @@ elif args.use_center_loss:
     knownsMinimumMag_ = np.ones((X_train.shape[0]))*args.Minimum_Knowns_Magnitude
     
     aux_input = Input((10,), dtype='float32', name='aux_input')
-    
     aux_input_ = np.array(Y_train)
-    main_input = Input((28, 28, 1))
-       
-   
-    #y_train_onehot = to_categorical(mnist., 10)
-    #y_test_onehot = to_categorical(y_test, 10)
+    #main_input = Input((28, 28, 1))
     
     
     #if args.use_lenet:
@@ -240,92 +235,40 @@ elif args.use_center_loss:
     #else:
     #    Center_Loss_Lenet_pp=model_tools.LeNet_plus_plus(ring_approach=True,knownsMinimumMag=knownsMinimumMag, center_approach=True, aux_input=aux_input)
 
-    Center_Loss_Lenet_pp = LeNet_plus_plus_plus_model(main_input,knownsMinimumMag, aux_input)
-    #Center_Loss_Lenet_pp = LeNet_plus_plus_plus_model(main_input, aux_input)
+    Center_Loss_Lenet_pp=model_tools.LeNet_plus_plus(ring_approach=True, knownsMinimumMag=knownsMinimumMag, center_approach=True, aux_input=aux_input)
+    #Center_Loss_Lenet_pp = LeNet_plus_plus_plus_model(main_input,knownsMinimumMag, aux_input)
     
-    
-    """
     model_saver = ModelCheckpoint(
                                   results_dir+'Center_'+str(args.Minimum_Knowns_Magnitude)+'_'+str(args.random_model)+'.h5py',
                                   monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='min', period=1
                                   )
-    """
-    #callbacks_list = [model_saver]
-    call1 = TensorBoard(log_dir='logs')
-    callbacks_list = [call1]
+                                  
+    callTB = TensorBoard(log_dir='logs')
+    callbacks_list = [model_saver, callTB]
+    
 
     flag_placeholder=np.zeros((mnist.Y_val.shape[0],2))
     flag_placeholder[:,0]=1
 
     dummy1 = np.zeros((X_train.shape[0]))
-    print(dummy1.shape)
     dummy2 = np.zeros((mnist.X_val.shape[0]))
-    print(Y_train.shape)
-    print(X_train.shape)
     
-    
-    #mnist.Y_train
-    # ,dummy1
-    # ,mnist.Y_val
-    # ,dummy2
-    #validation_data=[
-    #                 [mnist.X_val,np.ones(mnist.X_val.shape[0])*args.Minimum_Knowns_Magnitude,mnist.Y_val],
-    #                 [mnist.Y_val,flag_placeholder,dummy2]
-    #                 ],
-                     
-    """
-    Ring_Loss_Lenet_pp.compile(
+    Center_Loss_Lenet_pp.compile(
                                optimizer=adam,
-                               loss={'softmax': 'categorical_crossentropy','fc':ring_loss},
-                               loss_weights={'softmax': args.cross_entropy_loss_weight, 'fc': args.ring_loss_weight},
-                               metrics=['accuracy']
-                               )
-    info=Ring_Loss_Lenet_pp.fit(
-                               x=[X_train,knownsMinimumMag_],
-                               y=[Y_train,Y_pred_with_flags],
-                               batch_size=args.Batch_Size, epochs=args.no_of_epochs,verbose=1,sample_weight=[sample_weights,sample_weights],
-                               callbacks=callbacks_list
-                               )
-    
-    """
-    # ,'fc': zero_loss
-    # , 'fc': args.center_loss_weight
-    # sample_weight=[sample_weights,sample_weights,sample_weights]
-    optim = optimizers.SGD(lr=0.001, momentum=0.9)
-
-    Center_Loss_Lenet_pp.compile(
-                                 optimizer=optim,
-                                 loss={'softmax': 'categorical_crossentropy', 'fc':ring_loss, 'centerlosslayer': zero_loss},
-                                 loss_weights={'softmax': args.cross_entropy_loss_weight, 'fc': args.ring_loss_weight, 'centerlosslayer': args.center_loss_weight},
-                                 metrics=['accuracy']
-                             )
-    
-    
-    Center_Loss_Lenet_pp.fit([X_train,knownsMinimumMag_,aux_input_], [Y_train,Y_pred_with_flags,dummy1], batch_size=args.Batch_Size, epochs=args.no_of_epochs,
-                             verbose=2, callbacks=callbacks_list)
-
-
-
-    """
-    Center_Loss_Lenet_pp.compile(
-                               optimizer=optim,
-                               loss={'softmax': 'categorical_crossentropy', 'centerlosslayer': zero_loss},
-                               loss_weights={'softmax': args.cross_entropy_loss_weight, 'centerlosslayer': args.center_loss_weight},
+                               loss={'softmax': 'categorical_crossentropy', 'fc': ring_loss, 'centerlosslayer': zero_loss},
+                               loss_weights={'softmax': args.cross_entropy_loss_weight, 'fc': args.ring_loss_weight, 'centerlosslayer': args.center_loss_weight},
                                metrics=['accuracy']
                            )
-    """
-
-    #Center_Loss_Lenet_pp.fit([X_train,aux_input_], [Y_train, dummy1], batch_size=args.Batch_Size, epochs=args.no_of_epochs,
-    #      verbose=2, callbacks=callbacks_list)
-    """
-    info=Ring_Loss_Lenet_pp.fit(
-                                    x=[X_train,knownsMinimumMag_,aux_input_],
-                                    y=[Y_train,Y_pred_with_flags,dummy1],
-                                    batch_size=args.Batch_Size, epochs=args.no_of_epochs,verbose=1,
-                                    callbacks=callbacks_list
+    info=Center_Loss_Lenet_pp.fit(
+                                x=[X_train,knownsMinimumMag_,aux_input_],
+                                y=[Y_train,Y_pred_with_flags,dummy1],
+                                validation_data=[
+                                                 [mnist.X_val,np.ones(mnist.X_val.shape[0])*args.Minimum_Knowns_Magnitude,mnist.Y_val],
+                                                 [mnist.Y_val,flag_placeholder,dummy2]
+                                                 ],
+                                batch_size=args.Batch_Size, epochs=args.no_of_epochs,verbose=1,sample_weight=[sample_weights,sample_weights,sample_weights],
+                                callbacks=callbacks_list
                                 )
-    """
-
 
 else:
     if args.use_lenet:
