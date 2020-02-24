@@ -6,7 +6,7 @@ import numpy as np
 from centerLoss_MNIST import prelu, CenterLossLayer
 
 
-def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approach=False,background_class=False, knownsMinimumMag = None, center_approach=True, aux_input = None):
+def LeNet_plus_plus(perform_L2_norm=False,activation_type='softmax',ring_approach=False,background_class=False, knownsMinimumMag = None, center_approach=False, aux_input = None):
     """
     Defines the network architecture for LeNet++.
     Use the options for different approaches:
