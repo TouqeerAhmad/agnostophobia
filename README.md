@@ -16,7 +16,7 @@ The figure below replicates the graphs demonstrated in Figure1 and Figure2 of th
 Unlike objectosphere loss, center loss has produced histogram for knowns having two distinct peaks; one farther from the known unknowns' peak (blue) whereas the second smaller one overlapping with it. Since, both the networks are trained for equal number of epochs, we can rule out less amount of training. Similarly, the lamba (weigh parameter for center loss) can not cause this skewed behavior as can also be seen in the row1 right most corner. Upon further investigation, I have realised the mistake I have made during the incorporation of the center-loss. The center-loss should have been computed for the known samples (MNIST digits) only, whereas I have inclused the full training set (MNIST digits + Letters) for the computation of the center-loss which is causing the histogram to have two peaks -- one aligning with the known samples as in objectorsphere while other aligning with the known unknown samples. The results for unknown unknown samples (CIFAR) are generated through the same models so they also suffer from the mistake and there is no point in discussing those graphs separately. I anticipate with  limiting the center-loss to known samples (which it should have been in the first place), it should produce more compact classes (as seen from 2D feature representation) than objectosphere alone.
 
 <p align="center">
-<img height="400" src="https://github.com/TouqeerAhmad/agnostophobia/blob/master/Reducing-Network-Agnostophobia/MNIST/result_collage.png">
+<img height="800" src="https://github.com/TouqeerAhmad/agnostophobia/blob/master/Reducing-Network-Agnostophobia/MNIST/result_collage.png">
 </p>
 
 
