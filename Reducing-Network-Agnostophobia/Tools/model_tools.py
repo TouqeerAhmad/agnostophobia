@@ -172,6 +172,26 @@ def extract_features(model,data,layer_name = ['fc','softmax']):
     return intermediate_output
 
 
+def extract_features2(model,data,layer_name = ['fc','softmax']):
+    """
+        Use this function to extract deep feature from the layers of interest.
+        Input:
+        model: Keras model object
+        data: The data in Numpy array for which deep features need to be extracted.
+        layer_name: A list containing all the layer names that need to be extracted.
+        """
+    out=[]
+    for l in layer_name:
+        out.append(model.get_layer(l).output)
+    #print(model.input)
+    #print(data[0].shape)
+    #print(data[1].shape)
+    intermediate_layer_model = Model(inputs=model.input,outputs=out)
+    intermediate_output = intermediate_layer_model.predict(data)
+    return intermediate_output
+
+
+
 
 def concatenate_training_data(obj,y,cross_entropy_probs,ring_loss=False):
     """

@@ -1,6 +1,6 @@
 import numpy as np
 #import cPickle
-import pickle
+import pickle as cPickle
 import csv
 import gzip
 import struct
@@ -113,7 +113,8 @@ class cifar_prep:
     
     def __init__(self):
         print('In init of cifar_prep')
-        cifar_data = cPickle.load(open('../datasets/cifar-10-batches-py/data_batch_1', 'rb'))
+        #cifar_data = cPickle.load(open('../datasets/cifar-10-batches-py/data_batch_1', 'rb'))
+        cifar_data = cPickle.load(open('../datasets/cifar-10-batches-py/data_batch_1', 'rb'), encoding='latin1') # encoding='bytes')
         raw_images=cifar_data['data'].reshape(cifar_data['data'].shape[0],32,32,3, order='F')
         resized_images=[]
         for img in raw_images:
@@ -160,3 +161,7 @@ class NOT_MNIST:
         p.close()
         p.join()
         del p
+
+if __name__=='__main__':
+    cifar=cifar_prep()
+

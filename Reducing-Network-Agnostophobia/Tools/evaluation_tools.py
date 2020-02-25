@@ -21,7 +21,7 @@ def write_file_for_DIR(gt_y,pred_y,file_name,feature_vector=None,num_of_known_cl
     similarity_score = pred_y.flatten('F')
     if feature_vector is not None:
         file_name = ('/').join(file_name.split('/')[:-1])+"/Multiplying_with_mag_"+file_name.split('/')[-1]
-        print "DIR score file saved at",file_name
+        print("DIR score file saved at",file_name)
         similarity_score=similarity_score*np.tile(np.sqrt(np.sum(np.square(feature_vector),axis=1)),num_of_known_classes)
         
     stacked_file_data=np.stack((
@@ -73,7 +73,7 @@ def process_files(files_to_process,labels,DIR_filename=None,out_of_plot=False):
     to_plot=p.map(process_each_file,files_to_process)
     p.close()
     p.join()
-    print "Plotting"
+    print("Plotting")
     u = []
     fig, ax = plt.subplots()
     for i,(TP,FP,positives,unknowns) in enumerate(to_plot):
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     if len(args.files_to_process) != len(args.labels):
-        print "Please provide a label for each file name ... Exiting!!!"
+        print("Please provide a label for each file name ... Exiting!!!")
         exit()
         
     process_files(args.files_to_process,args.labels,args.DIR_filename)

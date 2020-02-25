@@ -25,6 +25,7 @@ def plot_histogram(pos_features,neg_features,pos_labels='Knowns',neg_labels='Unk
     if title is not None:
         plt.title(title)
     plt.savefig(file_name.format('Hist','pdf'),bbox_inches='tight')
+    plt.savefig(file_name.format('Hist','png'),bbox_inches='tight')
     plt.show()
         
 
@@ -52,6 +53,7 @@ def plot_softmax_histogram(pos_prob,neg_prob,pos_labels='Knowns',neg_labels='Unk
     if title is not None:
         plt.title(title)
     plt.savefig(file_name.format('SoftMax_Hist','pdf'), bbox_inches='tight')
+    plt.savefig(file_name.format('SoftMax_Hist','png'), bbox_inches='tight')
     plt.show()
 
 
@@ -84,6 +86,7 @@ def _plot_softmax_histogram(pos_prob,neg_prob,pos_labels='Knowns',neg_labels='Un
     if title is not None:
         plt.title(title)
     plt.savefig(file_name.format('SoftMax_Hist','pdf'), bbox_inches='tight')
+    plt.savefig(file_name.format('SoftMax_Hist','png'), bbox_inches='tight')
     plt.show()
 
 
