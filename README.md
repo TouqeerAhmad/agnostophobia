@@ -13,6 +13,10 @@ In this repository/exercise, I have borrowed the implementation of center-loss f
 ## Current Implementation Status and Analysis
 While the incorporation of center-loss into objectorshpre framework is complete, I was unable to complete the analysis part, mostly due to unavailability of a GPU. Currently, it takes around 35 min/epoch on my laptop to train the network with objectosphere loss and center loss which makes it impractical to train for large number of epochs e.g. 70 in case of original setup. Overnigh, I was able to train the network with (softmax + objectosphere + center) and without center loss (softmax + objectosphere); each for 5 epochs. The trained models are available [here](https://github.com/TouqeerAhmad/agnostophobia/tree/master/Reducing-Network-Agnostophobia/MNIST/LeNet%2B%2B/Models). I anticipate that with proper full length training, center-loss in principle should be helpful to objectosphere loss and result in enhanced inter-class separation and intra-class compactness of known classes. However, this exercise requires a complete investigation and multiple rounds of training as the respective weight (lambda parameter) of center-loss is to be found experimentally through multi-fold cross-validation.
 
+<p align="center">
+<img height="400" src="https://github.com/xinntao/ESRGAN/blob/master/figures/baboon.jpg">
+</p>
+
 
 ## References
 * [1]. A. Dhamija, M. Günther, and Terrance E. Boult: “Reducing Network Agnostophobia”, Neural Information Processing Systems (NeurIPS), 2018. [paper](https://papers.nips.cc/paper/8129-reducing-network-agnostophobia.pdf)
